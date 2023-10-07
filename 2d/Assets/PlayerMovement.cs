@@ -11,7 +11,8 @@ public class PlayerMovement : MonoBehaviour
     private float x =0f;
     public bool isJumping=false;//jumping true means jumping false means not jumping
     private enum MovementState{idle,running,jumping,falling};
-    [SerializeField]private LayerMask jumpableGround;
+    //[SerializeField]private LayerMask jumpableGround;
+    [SerializeField] bool grounded = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
     {
         float x =Input.GetAxis("Horizontal");
         a.velocity=new Vector2(x * 7f,a.velocity.y);
-        if(Input.GetKeyDown("space") && IsGrounded()){
+        if(Input.GetKeyDown("space") && grounded ){
             a.velocity=new Vector2(a.velocity.x,14);
             isJumping=true;
         }
@@ -72,8 +73,19 @@ public class PlayerMovement : MonoBehaviour
     //     }
     //     anime.SetInteger("state",(int)state);
     // }
-    private bool IsGrounded(){
+    /*private bool IsGrounded(){
         return Physics2D.BoxCast(coll.bounds.center,coll.bounds.size,0f, Vector2.down,.1f,jumpableGround);
+    }*/
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.CompareTag("Ground") )
+            grounded = true;
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if(collision.gameObject.CompareTag("Ground"))
+            grounded = false;
     }
 }
 
